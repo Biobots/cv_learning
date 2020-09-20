@@ -1,0 +1,1 @@
+includes("ray_tracing/xmake.lua")
