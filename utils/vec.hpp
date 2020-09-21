@@ -184,6 +184,10 @@ struct vec
 	{
 		return sqrt(square());
 	}
+	vec unit_vector()
+	{
+		return *this / length();
+	}
 };
 
 template<typename T, int n>
@@ -312,16 +316,5 @@ struct vec4 : vec<T, 4>
 	T& z() { return this->data[2];}
 	T& w() { return this->data[3];}
 };
-
-template<typename T, int n>
-inline vec<T, n> unit_vector(vec<T, n> v)
-{
-	return v / v.length();
-}
-
-inline vec3f unit_vector(vec3f v)
-{
-	return v / v.length();
-}
 
 #endif

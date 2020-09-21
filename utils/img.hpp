@@ -74,6 +74,11 @@ public:
 		uint idx = x + y * _width;
 		_data[idx] = val;
 	}
+	void set(uint x, uint y, rgbf val)
+	{
+		uint idx = x + y * _width;
+		_data[idx] = rgb(val.r()*255.99, val.g()*255.99, val.b()*255.99);
+	}
 	uchar* raw()
 	{
 		uint num = _width * _height;
