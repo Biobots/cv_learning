@@ -1,6 +1,7 @@
 #ifndef CV_VEC_HPP
 #define CV_VEC_HPP
 
+#include <defines.hpp>
 #include <vector>
 #include <cmath>
 
@@ -167,13 +168,9 @@ struct vec
 		return *this;
 	}
 
-	inline T dot(const vec& v1, const vec& v2)
-	{
-		return v1 * v2;
-	}
 	T square()
 	{
-		T sum;
+		T sum = 0;
 		for(int i = 0; i < n; i++)
 		{
 			sum += data[i] * data[i];
@@ -184,11 +181,22 @@ struct vec
 	{
 		return sqrt(square());
 	}
-	vec unit_vector()
+	vec normalize()
 	{
 		return *this / length();
 	}
 };
+
+template<typename T, int n>
+inline T dot(const vec<T, n>& v1, const vec<T, n>& v2)
+{
+	T sum = 0;
+	for(int i = 0; i < n; i++)
+	{
+		sum += v1[i] * v2[i];
+	}
+	return sum;
+}
 
 template<typename T, int n>
 inline vec<T, n> operator*(const T& t, const vec<T, n>& v)
@@ -236,6 +244,15 @@ struct rgbf : vec<float, 3>
 	float& r() { return data[0];}
 	float& g() { return data[1];}
 	float& b() { return data[2];}
+
+	static rgbf random()
+	{
+		return rgbf(random_float(), random_float(), random_float());
+	}
+	static rgbf random(float min, float max)
+	{
+		return rgbf(random_float(min, max), random_float(min, max), random_float(min, max));
+	}
 };
 
 struct bgr : vec<short, 3>
@@ -289,18 +306,68 @@ struct vec3 : vec<T, 3>
 	T& x() { return this->data[0];}
 	T& y() { return this->data[1];}
 	T& z() { return this->data[2];}
-
-	inline vec3 cross(const vec3& u, const vec3& v)
-	{
-		return vec3(
-				u.data[1] * v.data[2] - u.data[2] * v.data[1],
-				u.data[2] * v.data[0] - u.data[0] * v.data[2],
-				u.data[0] * v.data[1] - u.data[1] * v.data[0]
-			);
-	}
 };
 
+template<typename T>
+inline vec3<T> cross(const vec3<T>& u, const vec3<T>& v)
+{
+	return vec3<T>(
+			u.data[1] * v.data[2] - u.data[2] * v.data[1],
+			u.data[2] * v.data[0] - u.data[0] * v.data[2],
+			u.data[0] * v.data[1] - u.data[1] * v.data[0]
+		);
+}
+
 using vec3f = vec3<float>;
+
+inline static vec3f random3f()
+{
+	return vec3f(random_float(), random_float(), random_float());
+}
+
+inline static vec3f random3f(float min, float max)
+{
+	return vec3f(random_float(min, max), random_float(min, max), random_float(min, max));
+}
+
+vec3f random3f_in_unit_sphere()
+{
+	while (true) {
+		auto p = random3f(-1,1);
+		if (p.square() >= 1) continue;
+		return p;
+	}
+}
+
+vec3f random3f_unit_vector() //True Lambertian Reflection
+{
+	auto a = random_float(0, 2*pi);
+	auto z = random_float(-1, 1);
+	auto r = sqrt(1 - z*z);
+	return vec3f(r*cos(a), r*sin(a), z);
+}
+
+vec3f random_in_unit_disk()
+{
+	while (true) {
+		auto p = vec3f(random_float(-1,1), random_float(-1,1), 0);
+		if (p.square() >= 1) continue;
+		return p;
+	}
+}
+
+vec3f reflect(const vec3f& v, const vec3f& n)
+{
+    return v - 2*dot(v,n)*n;
+}
+
+vec3f refract(const vec3f& uv, const vec3f& n, float etai_over_etat)
+{
+	auto cos_theta = dot(-uv, n);
+	vec3f r_out_perp =  etai_over_etat * (uv + cos_theta*n);
+	vec3f r_out_parallel = -sqrt(fabs(1.0 - r_out_perp.square())) * n;
+	return r_out_perp + r_out_parallel;
+}
 
 template<typename T>
 struct vec4 : vec<T, 4>

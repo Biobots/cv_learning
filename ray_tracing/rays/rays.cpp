@@ -2,9 +2,25 @@
 #include <img.hpp>
 #include <ray.hpp>
 
+float hit_sphere(const vec3f& center, float radius, const ray& r) {
+	vec3f oc = r.origin() - center;
+	float a = dot(r.direction(), r.direction());
+	float half_b = dot(oc, r.direction());
+	float c = dot(oc, oc) - radius*radius;
+	float discriminant = half_b*half_b - a*c;
+	return discriminant < 0 ? -1.0 : (-half_b - sqrt(discriminant)) / a; //只需显示较小根
+}
+
 rgbf ray_color(const ray& r) {
-	vec3f unit_direction = r.direction().unit_vector();
-	float t = 0.5*(unit_direction.y() + 1.0);
+	vec3f sphere(0, 0, -1); //球心
+	float t = hit_sphere(sphere, 0.5, r);
+	if(t > 0)
+	{
+		vec3f normal = (r.at(t) - sphere).normalize(); //法向量
+		return 0.5*rgbf(normal.x()+1, normal.y()+1, normal.z()+1);
+	}
+	vec3f unit_direction = r.direction().normalize();
+	t = 0.5*(unit_direction.y() + 1.0);
 	return (1.0-t)*rgbf(1.0, 1.0, 1.0) + t*rgbf(0.5, 0.7, 1.0);
 }
 
@@ -36,5 +52,5 @@ int main()
 			pic.set(i, j, c);
 		}
 	}
-	generateBmp24("b.bmp", pic);
+	generateBmp24("outputs/simple_ray.bmp", pic);
 }

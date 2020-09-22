@@ -25,6 +25,6 @@ int main(int argc, const char** argv)
 	vec3<float> f1(1.4,2.0,3.1);
 	vec3<float> f2 = f1 + 1.2;
 	std::cout << f2.x() << std::endl;
-	generateBmp24("a.bmp", pic);
+	generateBmp24("outputs/test.bmp", pic);
 	return 0;
 }

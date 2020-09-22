@@ -47,7 +47,7 @@ typedef struct BITMAPINFOHEADER{
 class Img
 {
 private:
-	rgb* _data;
+	bgr* _data;
 	uchar* _raw;
 	uint _width;
 	uint _height;
@@ -56,7 +56,7 @@ public:
 	{
 		_width = width;
 		_height = height;
-		_data = new rgb[width * height];
+		_data = new bgr[width * height];
 		_raw = new uchar[width * height * 3];
 	}
 	~Img()
@@ -64,7 +64,7 @@ public:
 		delete _data;
 		delete _raw;
 	}
-	rgb get(uint x, uint y)
+	bgr get(uint x, uint y)
 	{
 		uint idx = x + y * _width;
 		return _data[idx];
@@ -72,12 +72,17 @@ public:
 	void set(uint x, uint y, rgb val)
 	{
 		uint idx = x + y * _width;
+		_data[idx] = bgr(val.b(), val.g(), val.r());
+	}
+	void set(uint x, uint y, bgr val)
+	{
+		uint idx = x + y * _width;
 		_data[idx] = val;
 	}
 	void set(uint x, uint y, rgbf val)
 	{
 		uint idx = x + y * _width;
-		_data[idx] = rgb(val.r()*255.99, val.g()*255.99, val.b()*255.99);
+		_data[idx] = bgr(val.b()*255.99, val.g()*255.99, val.r()*255.99);
 	}
 	uchar* raw()
 	{
