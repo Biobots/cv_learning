@@ -32,8 +32,8 @@ Hittable_list random_scene() {
     auto ground_material = make_shared<Lambertian>(rgbf(0.5, 0.5, 0.5));
     world.add(make_shared<Sphere>(vec3f(0,-1000,0), 1000, ground_material));
 
-    for (int a = -2; a < 2; a++) {
-        for (int b = -2; b < 2; b++) {
+    for (int a = -11; a < 11; a++) {
+        for (int b = -11; b < 11; b++) {
             auto choose_mat = random_float();
             vec3f center(a + 0.9*random_float(), 0.2, b + 0.9*random_float());
 
@@ -75,9 +75,9 @@ Hittable_list random_scene() {
 int main()
 {
 	const auto aspect_ratio = 3.0 / 2.0;
-	const int image_width = 1200;
+	const int image_width = 400;
 	const int image_height = static_cast<int>(image_width / aspect_ratio);
-	const int samples_per_pixel = 500;
+	const int samples_per_pixel = 100;
 	const int max_depth = 50;
 
 	Hittable_list world = random_scene();
@@ -96,6 +96,7 @@ int main()
 				auto v = (j + random_float()) / (image_height-1);
 				ray r = cam.getRay(u, v);
 				tmpc += ray_color(r, world, max_depth);
+				//printf("%d %d %d\n", i,j,s);
 			}
 			rgbf c = generateColor(tmpc, samples_per_pixel, 2);
 			pic.set(i, j, c);
