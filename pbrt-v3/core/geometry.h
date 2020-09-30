@@ -38,6 +38,25 @@ public:
 
 };
 
+class vec3f : vec<float, 3>
+{
+	template <typename... Ts>
+	vec3f(Ts... vals) : vec<float, 3>(vals...) {}
+	vec3f()
+	{
+		data[0] = 0;
+		data[1] = 0;
+		data[2] = 0;
+	}
+	vec3f(vec<T, 3>&& val)
+	{
+		copy(val.data, val.data + 3, data);
+	}
+	T& x() { return data[0];}
+	T& y() { return data[1];}
+	T& z() { return data[2];}
+}
+
 }
 
 #endif

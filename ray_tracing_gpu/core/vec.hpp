@@ -311,8 +311,8 @@ struct vec2 : vec<T, 2>
 	vec2(Ts... vals) : vec<T, 2>(vals...) {}
 	vec2()
 	{
-		data[0] = 0;
-		data[1] = 0;
+		this->data[0] = 0;
+		this->data[1] = 0;
 	}
 	vec2(vec<T, 2>&& val)
 	{
@@ -329,12 +329,12 @@ struct vec3 : vec<T, 3>
 	vec3(Ts... vals) : vec<T, 3>(vals...) {}
 	vec3()
 	{
-		data[0] = 0;
-		data[1] = 0;
-		data[2] = 0;
+		this->data[0] = 0;
+		this->data[1] = 0;
+		this->data[2] = 0;
 	}
 	vec3(vec<T, 3>&& val)
-	{2
+	{
 		copy(val.data, val.data + 3, this->data);
 	}
 	T& x() { return this->data[0];}
